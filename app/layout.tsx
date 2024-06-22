@@ -8,6 +8,7 @@ import {siteConfig} from "@/config/site";
 import {fontSans} from "@/config/fonts";
 
 export const metadata: Metadata = {
+    manifest: "/manifest.json",
     title: {
         default: siteConfig.name,
         template: `%s - ${siteConfig.name}`,
