@@ -21,6 +21,7 @@ export default function BackgroundChanger() {
             >
                 <Image
                     src="refresh.svg"
+                    alt="Refresh icon"
                     height={26}
                     width={26}
                 />
