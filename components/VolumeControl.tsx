@@ -8,7 +8,7 @@ interface VolumeControlProps {
 
 export const VolumeControl: React.FC<VolumeControlProps> = ({setVolume}) => {
     const [volume, setVolumeState] = useState<number>(100);
-    const [isMuted, setIsMuted] = useState<boolean>(false);
+    const [, setIsMuted] = useState<boolean>(false);
     const [prevVolume, setPrevVolume] = useState<number>(100);
 
     const handleVolumeChange = (value: number | number[]) => {
