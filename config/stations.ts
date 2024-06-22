@@ -6,17 +6,17 @@ export const stations: Category[] = [
         stations: [
             {
                 name: "Lofi Girl",
-                picture: "lofi-girl.gif",
+                picture: "stations/lofi-girl.gif",
                 videoId: "jfKfPfyJRdk"
             },
             {
                 name: "Chillhop Music",
-                picture: "chillhop-music.webp",
+                picture: "stations/chillhop-music.gif",
                 videoId: "7NOSDKb0HlU"
             },
             {
                 name: "STEEZYASFUCK",
-                picture: "STEEZYASFUCK.gif",
+                picture: "stations/STEEZYASFUCK.gif",
                 videoId: "lP26UCnoH9s"
             },
         ]
@@ -26,12 +26,12 @@ export const stations: Category[] = [
         stations: [
             {
                 name: "Rap Mafia",
-                picture: "rap-mafia.jpg",
+                picture: "stations/rap-mafia.jpg",
                 videoId: "0MOkLkTP-Jk"
             },
             {
                 name: "Matthew Chávez",
-                picture: "matthew-chávez.jpg",
+                picture: "stations/matthew-chávez.jpg",
                 videoId: "86XzuPmMriw"
             }
         ]
