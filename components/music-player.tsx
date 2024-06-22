@@ -119,7 +119,7 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
         }
     };
 
-// Function to move to the next station
+    // Function to move to the next station
     const goToNextStation = () => {
         const currentCategory = categories.find(category => category.name === selectedCategory);
         if (!currentCategory) return;
@@ -131,7 +131,7 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
         setIsPlaying(true);
     };
 
-// Function to move to the previous station
+    // Function to move to the previous station
     const goToPreviousStation = () => {
         const currentCategory = categories.find(category => category.name === selectedCategory);
         if (!currentCategory) return;
@@ -199,6 +199,7 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
                                     <div className="flex justify-start items-center gap-1">
                                         <Image
                                             src="logo.svg"
+                                            alt="Logo image"
                                             width={50}
                                             height={50}
                                         />
@@ -277,9 +278,7 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
                             <GithubIcon size={30} className="dark:text-black text-default"/>
                         </Link>
                         <ThemeSwitch/>
-                        <div className="w-full md:w-auto mt-4 md:mt-0">
-                            <BackgroundChanger/>
-                        </div>
+                        <BackgroundChanger/>
                     </CardFooter>
                 </>
             ) : (
