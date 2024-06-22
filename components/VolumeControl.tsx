@@ -21,18 +21,6 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({setVolume}) => {
         }
     };
 
-    const toggleMute = () => {
-        setIsMuted((prevIsMuted) => {
-            const newVolume = prevIsMuted ? prevVolume : 0;
-            setVolumeState(newVolume);
-            setVolume(newVolume);
-            if (!prevIsMuted) {
-                setPrevVolume(volume);
-            }
-            return !prevIsMuted;
-        });
-    };
-
     return (
         <div className="flex flex-col w-full h-full items-center justify-center">
             <Slider
