@@ -3,7 +3,7 @@
 import {useState} from 'react';
 import {Button} from "@nextui-org/button";
 import {backgrounds} from "@/config/backgrounds";
-import {Image} from "@nextui-org/react";
+import { MdOutlineChangeCircle } from "react-icons/md";
 
 export default function BackgroundChanger() {
     const [currentBackgroundIndex, setCurrentBackgroundIndex] = useState(0);
@@ -19,12 +19,7 @@ export default function BackgroundChanger() {
                 variant="light"
                 onClick={toggleBackground}
             >
-                <Image
-                    src="refresh.svg"
-                    alt="Refresh icon"
-                    height={26}
-                    width={26}
-                />
+                <MdOutlineChangeCircle size={24}/>
             </Button>
             <style jsx global>{`
                 body {
