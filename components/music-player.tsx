@@ -7,9 +7,9 @@ import {
     NextIcon,
     PreviousIcon,
     ShuffleIcon,
-    PlayCircleIcon,
-    GithubIcon
+    PlayCircleIcon
 } from "@/components/icons";
+import {IoLogoGithub} from "react-icons/io";
 import {Category, Station} from "@/types";
 import {VolumeControl} from "@/components/VolumeControl";
 import {MadeWith} from "@/components/made-with";
@@ -19,6 +19,9 @@ import {stations} from "@/config/stations";
 import {Link} from "@nextui-org/link";
 import {siteConfig} from "@/config/site";
 import {ThemeSwitch} from "@/components/switch-theme";
+import {Shortcuts} from "@/components/shortcuts";
+import Hotkeys from "react-hot-keys";
+import {FaSquareXTwitter} from "react-icons/fa6";
 
 interface MusicPlayerProps extends CardProps {
 }
@@ -31,7 +34,10 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
     const [player, setPlayer] = useState<any>(null);
     const [selectedCategory, setSelectedCategory] = useState<string>("lofi");
     const [selectedStation, setSelectedStation] = useState<string>("lofi");
-
+    const [volume, setVolumes] = useState<number>(100);
+    const tweetText = encodeURIComponent(siteConfig.text);
+    const tweetUrl = encodeURIComponent(siteConfig.url);
+    const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
     useEffect(() => {
         setCategories(stations);
         if (stations.length > 0) {
@@ -43,7 +49,6 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
         }
     }, []);
 
-
     useEffect(() => {
         const lastStation = JSON.parse(localStorage.getItem("lastStation") || "null");
         if (lastStation) {
@@ -51,10 +56,6 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
             setIsPlaying(true);
         }
     }, []);
-
-    const onTogglePlay = () => {
-        setIsPlaying((prevIsPlaying) => !prevIsPlaying);
-    };
 
     useEffect(() => {
         const script = document.createElement("script");
@@ -93,9 +94,22 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
         }
     }, [player, isPlaying]);
 
+    const onTogglePlay = () => {
+        setIsPlaying((prevIsPlaying) => !prevIsPlaying);
+    };
+
     const setVolume = (volume: number) => {
         if (player) {
             player.setVolume(volume);
+        }
+    };
+
+    const adjustVolume = (newVolume: number) => {
+        const clampedVolume = Math.max(0, Math.min(100, newVolume));
+        setVolume(clampedVolume);
+        setVolumes(clampedVolume);
+        if (player) {
+            player.setVolume(clampedVolume);
         }
     };
 
@@ -119,7 +133,6 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
         }
     };
 
-    // Function to move to the next station
     const goToNextStation = () => {
         const currentCategory = categories.find(category => category.name === selectedCategory);
         if (!currentCategory) return;
@@ -131,7 +144,6 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
         setIsPlaying(true);
     };
 
-    // Function to move to the previous station
     const goToPreviousStation = () => {
         const currentCategory = categories.find(category => category.name === selectedCategory);
         if (!currentCategory) return;
@@ -157,135 +169,183 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
         setIsPlaying(true);
     };
 
-    return (
-        <Card
-            isBlurred
-            className="border-none bg-default-400 dark:bg-default-100/30 max-w-[610px]"
-            shadow="md"
-            {...otherProps}
-        >
-            {currentStation ? (
-                <>
-                    <CardBody>
-                        <div className="audio-player">
-                            <div id="player"></div>
-                        </div>
-                        <div className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
-                            <div className="relative col-span-6 md:col-span-4">
-                                <Image
-                                    alt="Album cover"
-                                    className="object-cover"
-                                    height={300}
-                                    shadow="md"
-                                    src={currentStation.picture}
-                                    width="100%"
-                                />
-                            </div>
+    const handleHotkey = (keyName: string, e: KeyboardEvent) => {
+        e.preventDefault();
+        switch (keyName) {
+            case 'f':
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+                break;
+            case 'space':
+                onTogglePlay();
+                break;
+            case 'up':
+                adjustVolume(volume + 5);
+                break;
+            case 'down':
+                adjustVolume(volume - 5);
+                break;
+        }
+    };
 
-                            <div className="flex flex-col col-span-6 md:col-span-8">
-                                <div className="flex justify-between items-start">
-                                    <div className="flex flex-col gap-1">
+    return (
+        <Hotkeys
+            keyName="f,space,up,down"
+            onKeyDown={handleHotkey}
+            filter={(event) => {
+                const target = event.target as HTMLElement;
+                return !['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+            }}
+        >
+
+            <Card
+                isBlurred
+                className="max-w-[900px]"
+                shadow="md"
+                {...otherProps}
+            >
+                {currentStation ? (
+                    <>
+                        <CardBody>
+                            <div className="audio-player">
+                                <div id="player"></div>
+                            </div>
+                            <div
+                                className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
+                                <div className="relative col-span-6 md:col-span-4">
+                                    <Image
+                                        alt="Album cover"
+                                        className="object-fill"
+                                        height={300}
+                                        shadow="md"
+                                        src={currentStation.picture}
+                                        width="100%"
+                                        isZoomed
+                                    />
+                                </div>
+
+                                <div className="flex flex-col col-span-6 md:col-span-8">
+                                    <div className="flex justify-between items-start gap-3">
+                                        <div className="flex flex-col gap-1 overflow-x-auto">
+                                            <Tabs
+                                                aria-label="Categories"
+                                                selectedKey={selectedCategory}
+                                                color="warning"
+                                                onSelectionChange={handleSelectionCategory}
+                                            >
+                                                {categories.map((category) => (
+                                                    <Tab key={category.name} title={category.name}/>
+                                                ))}
+                                            </Tabs>
+                                        </div>
+                                        <div className="flex justify-start items-center gap-1">
+                                            <Image
+                                                src="logo.svg"
+                                                alt="Logo image"
+                                                width={50}
+                                                height={50}
+                                            />
+                                            <p className="font-bold text-inherit">Gavazn Grooves</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col mt-4 gap-2">
                                         <Tabs
-                                            aria-label="Categories"
-                                            selectedKey={selectedCategory}
-                                            color="warning"
-                                            onSelectionChange={handleSelectionCategory}
+                                            aria-label="Stations"
+                                            selectedKey={selectedStation}
+                                            color="success"
+                                            onSelectionChange={handleSelectionChangeStation}
                                         >
-                                            {categories.map((category) => (
-                                                <Tab key={category.name} title={category.name}/>
-                                            ))}
+                                            {categories
+                                                .find(category => category.name === selectedCategory)
+                                                ?.stations.map(station => (
+                                                    <Tab key={station.name} title={station.name}/>
+                                                ))}
                                         </Tabs>
                                     </div>
-                                    <div className="flex justify-start items-center gap-1">
-                                        <Image
-                                            src="logo.svg"
-                                            alt="Logo image"
-                                            width={50}
-                                            height={50}
-                                        />
-                                        <p className="font-bold text-inherit">Gavazn Grooves</p>
+
+                                    <div className="flex flex-col mt-3 gap-1">
+                                        <VolumeControl volume={volume} setVolume={adjustVolume}/>
+                                    </div>
+                                    <div className="flex w-full items-center justify-center space-x-4 mt-4">
+                                        <Button
+                                            isIconOnly
+                                            className="w-auto h-auto data-[hover]:bg-foreground/10"
+                                            radius="full"
+                                            variant="light"
+                                            onClick={goToPreviousStation}
+                                        >
+                                            <PreviousIcon/>
+                                        </Button>
+                                        <Button
+                                            isIconOnly
+                                            className="w-auto h-auto data-[hover]:bg-foreground/10"
+                                            radius="full"
+                                            variant="light"
+                                            onClick={onTogglePlay}
+                                        >
+                                            {isPlaying ? (
+                                                <PauseCircleIcon size={54}/>
+                                            ) : (
+                                                <PlayCircleIcon size={54}/>
+                                            )}
+                                        </Button>
+                                        <Button
+                                            isIconOnly
+                                            className="data-[hover]:bg-foreground/10"
+                                            radius="full"
+                                            variant="light"
+                                            onClick={goToNextStation}
+                                        >
+                                            <NextIcon/>
+                                        </Button>
+                                        <Button
+                                            isIconOnly
+                                            className="data-[hover]:bg-foreground/10"
+                                            radius="full"
+                                            variant="light"
+                                            onClick={handleShuffle}
+                                        >
+                                            <ShuffleIcon/>
+                                        </Button>
                                     </div>
                                 </div>
-                                <div className="flex flex-col mt-4 gap-2">
-                                    <Tabs
-                                        aria-label="Stations"
-                                        selectedKey={selectedStation}
-                                        color="success"
-                                        onSelectionChange={handleSelectionChangeStation}
-                                    >
-                                        {categories
-                                            .find(category => category.name === selectedCategory)
-                                            ?.stations.map(station => (
-                                                <Tab key={station.name} title={station.name}/>
-                                            ))}
-                                    </Tabs>
-                                </div>
-
-                                <div className="flex flex-col mt-3 gap-1">
-                                    <VolumeControl setVolume={setVolume}/>
-                                </div>
-                                <div className="flex w-full items-center justify-center space-x-4 mt-4">
-                                    <Button
-                                        isIconOnly
-                                        className="w-auto h-auto data-[hover]:bg-foreground/10"
-                                        radius="full"
-                                        variant="light"
-                                        onClick={goToPreviousStation}
-                                    >
-                                        <PreviousIcon/>
-                                    </Button>
-                                    <Button
-                                        isIconOnly
-                                        className="w-auto h-auto data-[hover]:bg-foreground/10"
-                                        radius="full"
-                                        variant="light"
-                                        onClick={onTogglePlay}
-                                    >
-                                        {isPlaying ? (
-                                            <PauseCircleIcon size={54}/>
-                                        ) : (
-                                            <PlayCircleIcon size={54}/>
-                                        )}
-                                    </Button>
-                                    <Button
-                                        isIconOnly
-                                        className="data-[hover]:bg-foreground/10"
-                                        radius="full"
-                                        variant="light"
-                                        onClick={goToNextStation}
-                                    >
-                                        <NextIcon/>
-                                    </Button>
-                                    <Button
-                                        isIconOnly
-                                        className="data-[hover]:bg-foreground/10"
-                                        radius="full"
-                                        variant="light"
-                                        onClick={handleShuffle}
-                                    >
-                                        <ShuffleIcon/>
-                                    </Button>
-                                </div>
                             </div>
-                        </div>
 
+                        </CardBody>
+                        <CardFooter
+                            className="flex flex-col md:flex-row md:justify-between justify-center items-center">
+                            <div className="w-full md:w-auto">
+                                <MadeWith/>
+                            </div>
+                            <div className="flex flex-row">
+                                <Link isBlock isExternal color="foreground" aria-label="Twitter"
+                                      href={twitterShareUrl}>
+                                    <FaSquareXTwitter size={24}/>
+                                </Link>
+                                <Link isBlock isExternal color="foreground" aria-label="Github"
+                                      href={siteConfig.links.github}>
+                                    <IoLogoGithub size={24}/>
+                                </Link>
+                                <Button
+                                    isIconOnly
+                                    variant="light"
+                                >
+                                    <ThemeSwitch/>
+                                </Button>
+                                <Shortcuts/>
+                                <BackgroundChanger/>
+                            </div>
+                        </CardFooter>
+                    </>
+                ) : (
+                    <CardBody>
+                        <div>Loading stations...</div>
                     </CardBody>
-                    <CardFooter className="flex flex-col md:flex-row md:justify-between justify-center items-center">
-                        <div className="w-full md:w-auto">
-                            <MadeWith/>
-                        </div>
-                        <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-                            <GithubIcon size={30} className="dark:text-black text-default"/>
-                        </Link>
-                        <ThemeSwitch/>
-                        <BackgroundChanger/>
-                    </CardFooter>
-                </>
-            ) : (
-                <CardBody>
-                    <div>Loading stations...</div>
-                </CardBody>
-            )}
-        </Card>
+                )}
+            </Card>
+        </Hotkeys>
     );
 };
