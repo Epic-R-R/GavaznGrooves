@@ -17,6 +17,9 @@ export const metadata: Metadata = {
     icons: {
         icon: "/favicon.ico",
     },
+    publisher: siteConfig.publisher,
+    keywords: siteConfig.keywords,
+    creator: siteConfig.publisher,
 };
 
 
