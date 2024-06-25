@@ -1,24 +1,16 @@
-import React, {useState} from "react";
+import React from "react";
 import {Slider} from "@nextui-org/react";
 import {VolumeHighIcon, VolumeLowIcon} from "@/components/icons";
 
 interface VolumeControlProps {
+    volume: number;
     setVolume: (volume: number) => void;
 }
 
-export const VolumeControl: React.FC<VolumeControlProps> = ({setVolume}) => {
-    const [volume, setVolumeState] = useState<number>(100);
-    const [, setIsMuted] = useState<boolean>(false);
-    const [prevVolume, setPrevVolume] = useState<number>(100);
-
+export const VolumeControl: React.FC<VolumeControlProps> = ({volume, setVolume}) => {
     const handleVolumeChange = (value: number | number[]) => {
         const newVolume = Array.isArray(value) ? value[0] : value;
-        setVolumeState(newVolume);
         setVolume(newVolume);
-        setIsMuted(newVolume === 0);
-        if (newVolume !== 0) {
-            setPrevVolume(newVolume);
-        }
     };
 
     return (
@@ -29,6 +21,9 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({setVolume}) => {
                 color="foreground"
                 value={volume}
                 onChange={handleVolumeChange}
+                minValue={0}
+                maxValue={100}
+                step={1}
                 classNames={{
                     track: "bg-default-500/30",
                     thumb: "w-2 h-2 after:w-2 after:h-2 after:bg-foreground",
