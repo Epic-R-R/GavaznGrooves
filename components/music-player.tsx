@@ -19,7 +19,7 @@ import {stations} from "@/config/stations";
 import {Link} from "@nextui-org/link";
 import {siteConfig} from "@/config/site";
 import {ThemeSwitch} from "@/components/switch-theme";
-import {Shortcuts} from "@/components/shortcuts";
+import {ShortcutsModal} from "@/components/shortcuts-modal";
 import Hotkeys from "react-hot-keys";
 import {FaSquareXTwitter} from "react-icons/fa6";
 
@@ -335,7 +335,7 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
                                 >
                                     <ThemeSwitch/>
                                 </Button>
-                                <Shortcuts/>
+                                <ShortcutsModal/>
                                 <BackgroundChanger/>
                             </div>
                         </CardFooter>
