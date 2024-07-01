@@ -22,6 +22,8 @@ import {ThemeSwitch} from "@/components/switch-theme";
 import {ShortcutsModal} from "@/components/shortcuts-modal";
 import Hotkeys from "react-hot-keys";
 import {FaSquareXTwitter} from "react-icons/fa6";
+import {motion, AnimatePresence} from "framer-motion";
+
 
 interface MusicPlayerProps extends CardProps {
 }
@@ -38,6 +40,7 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
     const tweetText = encodeURIComponent(siteConfig.text);
     const tweetUrl = encodeURIComponent(siteConfig.url);
     const twitterShareUrl = `https://twitter.com/intent/tweet?text=${tweetText}&url=${tweetUrl}`;
+
     useEffect(() => {
         setCategories(stations);
         if (stations.length > 0) {
@@ -200,152 +203,191 @@ export const MusicPlayer: FC<MusicPlayerProps> = ({className, ...otherProps}) =>
                 return !['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
             }}
         >
-
-            <Card
-                isBlurred
-                className="max-w-[900px]"
-                shadow="md"
-                {...otherProps}
-            >
-                {currentStation ? (
-                    <>
-                        <CardBody>
-                            <div className="audio-player">
-                                <div id="player"></div>
-                            </div>
-                            <div
-                                className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
-                                <div className="relative col-span-6 md:col-span-4">
-                                    <Image
-                                        alt="Album cover"
-                                        className="object-fill"
-                                        height={300}
-                                        shadow="md"
-                                        src={currentStation.picture}
-                                        width="100%"
-                                        isZoomed
-                                    />
-                                </div>
-
-                                <div className="flex flex-col col-span-6 md:col-span-8">
-                                    <div className="flex justify-between items-start gap-3">
-                                        <div className="flex flex-col gap-1 overflow-x-auto">
-                                            <Tabs
-                                                aria-label="Categories"
-                                                selectedKey={selectedCategory}
-                                                color="warning"
-                                                onSelectionChange={handleSelectionCategory}
-                                            >
-                                                {categories.map((category) => (
-                                                    <Tab key={category.name} title={category.name}/>
-                                                ))}
-                                            </Tabs>
-                                        </div>
-                                        <div className="flex justify-start items-center gap-1">
+            <AnimatePresence>
+                <motion.div
+                    initial={{opacity: 0, y: 20}}
+                    animate={{opacity: 1, y: 0}}
+                    exit={{opacity: 0, y: -20}}
+                    transition={{duration: 0.5}}
+                >
+                    <Card
+                        isBlurred
+                        className="max-w-[900px]"
+                        shadow="md"
+                        {...otherProps}
+                    >
+                        {currentStation ? (
+                            <>
+                                <CardBody>
+                                    <div className="audio-player">
+                                        <div id="player"></div>
+                                    </div>
+                                    <div
+                                        className="grid grid-cols-6 md:grid-cols-12 gap-6 md:gap-4 items-center justify-center">
+                                        <div className="relative col-span-6 md:col-span-4">
                                             <Image
-                                                src="logo.svg"
-                                                alt="Logo image"
-                                                width={50}
-                                                height={50}
+                                                alt="Album cover"
+                                                className="object-fill"
+                                                height={300}
+                                                shadow="md"
+                                                src={currentStation.picture}
+                                                width="100%"
+                                                isZoomed
                                             />
-                                            <p className="font-bold text-inherit">Gavazn Grooves</p>
+                                        </div>
+
+                                        <div className="flex flex-col col-span-6 md:col-span-8">
+                                            <div className="flex justify-between items-start gap-3">
+                                                <div className="flex flex-col gap-1 overflow-x-auto">
+                                                    <Tabs
+                                                        aria-label="Categories"
+                                                        selectedKey={selectedCategory}
+                                                        color="warning"
+                                                        onSelectionChange={handleSelectionCategory}
+                                                    >
+                                                        {categories.map((category) => (
+                                                            <Tab key={category.name} title={category.name}/>
+                                                        ))}
+                                                    </Tabs>
+                                                </div>
+                                                <motion.div
+                                                    className="relative p-[3px] bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg group overflow-hidden shadow-lg"
+                                                    whileHover={{
+                                                        scale: 1.05,
+                                                        boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+                                                    }}
+                                                    transition={{duration: 0.3}}
+                                                >
+                                                    <motion.div
+                                                        className="absolute inset-0 bg-gradient-to-r from-emerald-300 to-teal-300 rounded-lg opacity-75"
+                                                        animate={{rotate: 360}}
+                                                        transition={{duration: 3, repeat: Infinity, ease: "linear"}}
+                                                    ></motion.div>
+                                                    <motion.div
+                                                        className="relative flex justify-start items-center gap-3 bg-gradient-to-br from-gray-900 to-gray-800 p-4 rounded-lg"
+                                                        initial={{opacity: 0, y: 20}}
+                                                        animate={{opacity: 1, y: 0}}
+                                                        transition={{duration: 0.5}}
+                                                    >
+                                                        <motion.div
+                                                            whileHover={{scale: 1.1}}
+                                                            whileTap={{scale: 0.9}}
+                                                        >
+                                                            <Image
+                                                                src="logo.svg"
+                                                                alt="Logo image"
+                                                                width={50}
+                                                                height={50}
+                                                            />
+                                                        </motion.div>
+                                                        <motion.p
+                                                            className="font-bold text-xl text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300"
+                                                            initial={{opacity: 0, x: -20}}
+                                                            animate={{opacity: 1, x: 0}}
+                                                            transition={{duration: 0.5, delay: 0.2}}
+                                                        >
+                                                            Gavazn Grooves
+                                                        </motion.p>
+                                                    </motion.div>
+                                                </motion.div>
+                                            </div>
+                                            <div className="flex flex-col mt-4 gap-2">
+                                                <Tabs
+                                                    aria-label="Stations"
+                                                    selectedKey={selectedStation}
+                                                    color="success"
+                                                    onSelectionChange={handleSelectionChangeStation}
+                                                >
+                                                    {categories
+                                                        .find(category => category.name === selectedCategory)
+                                                        ?.stations.map(station => (
+                                                            <Tab key={station.name} title={station.name}/>
+                                                        ))}
+                                                </Tabs>
+                                            </div>
+
+                                            <div className="flex flex-col mt-3 gap-1">
+                                                <VolumeControl volume={volume} setVolume={adjustVolume}/>
+                                            </div>
+                                            <div className="flex w-full items-center justify-center space-x-4 mt-4">
+                                                <Button
+                                                    isIconOnly
+                                                    className="w-auto h-auto data-[hover]:bg-foreground/10"
+                                                    radius="full"
+                                                    variant="light"
+                                                    onClick={goToPreviousStation}
+                                                >
+                                                    <PreviousIcon/>
+                                                </Button>
+
+                                                <Button
+                                                    isIconOnly
+                                                    className="w-auto h-auto data-[hover]:bg-foreground/10"
+                                                    radius="full"
+                                                    variant="light"
+                                                    onClick={onTogglePlay}
+                                                >
+                                                    {isPlaying ? (
+                                                        <PauseCircleIcon size={54}/>
+                                                    ) : (
+                                                        <PlayCircleIcon size={54}/>
+                                                    )}
+                                                </Button>
+                                                <Button
+                                                    isIconOnly
+                                                    className="data-[hover]:bg-foreground/10"
+                                                    radius="full"
+                                                    variant="light"
+                                                    onClick={goToNextStation}
+                                                >
+                                                    <NextIcon/>
+                                                </Button>
+                                                <Button
+                                                    isIconOnly
+                                                    className="data-[hover]:bg-foreground/10"
+                                                    radius="full"
+                                                    variant="light"
+                                                    onClick={handleShuffle}
+                                                >
+                                                    <ShuffleIcon/>
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="flex flex-col mt-4 gap-2">
-                                        <Tabs
-                                            aria-label="Stations"
-                                            selectedKey={selectedStation}
-                                            color="success"
-                                            onSelectionChange={handleSelectionChangeStation}
-                                        >
-                                            {categories
-                                                .find(category => category.name === selectedCategory)
-                                                ?.stations.map(station => (
-                                                    <Tab key={station.name} title={station.name}/>
-                                                ))}
-                                        </Tabs>
+                                </CardBody>
+                                <CardFooter
+                                    className="flex flex-col md:flex-row md:justify-between justify-center items-center">
+                                    <div className="w-full md:w-auto">
+                                        <MadeWith/>
                                     </div>
-
-                                    <div className="flex flex-col mt-3 gap-1">
-                                        <VolumeControl volume={volume} setVolume={adjustVolume}/>
+                                    <div className="flex flex-row">
+                                        <Link isBlock isExternal color="foreground" aria-label="Twitter"
+                                              href={twitterShareUrl}>
+                                            <FaSquareXTwitter size={24}/>
+                                        </Link>
+                                        <Link isBlock isExternal color="foreground" aria-label="Github"
+                                              href={siteConfig.links.github}>
+                                            <IoLogoGithub size={24}/>
+                                        </Link>
+                                        <Button
+                                            isIconOnly
+                                            variant="light"
+                                        >
+                                            <ThemeSwitch/>
+                                        </Button>
+                                        <ShortcutsModal/>
+                                        <BackgroundChanger/>
                                     </div>
-                                    <div className="flex w-full items-center justify-center space-x-4 mt-4">
-                                        <Button
-                                            isIconOnly
-                                            className="w-auto h-auto data-[hover]:bg-foreground/10"
-                                            radius="full"
-                                            variant="light"
-                                            onClick={goToPreviousStation}
-                                        >
-                                            <PreviousIcon/>
-                                        </Button>
-                                        <Button
-                                            isIconOnly
-                                            className="w-auto h-auto data-[hover]:bg-foreground/10"
-                                            radius="full"
-                                            variant="light"
-                                            onClick={onTogglePlay}
-                                        >
-                                            {isPlaying ? (
-                                                <PauseCircleIcon size={54}/>
-                                            ) : (
-                                                <PlayCircleIcon size={54}/>
-                                            )}
-                                        </Button>
-                                        <Button
-                                            isIconOnly
-                                            className="data-[hover]:bg-foreground/10"
-                                            radius="full"
-                                            variant="light"
-                                            onClick={goToNextStation}
-                                        >
-                                            <NextIcon/>
-                                        </Button>
-                                        <Button
-                                            isIconOnly
-                                            className="data-[hover]:bg-foreground/10"
-                                            radius="full"
-                                            variant="light"
-                                            onClick={handleShuffle}
-                                        >
-                                            <ShuffleIcon/>
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </CardBody>
-                        <CardFooter
-                            className="flex flex-col md:flex-row md:justify-between justify-center items-center">
-                            <div className="w-full md:w-auto">
-                                <MadeWith/>
-                            </div>
-                            <div className="flex flex-row">
-                                <Link isBlock isExternal color="foreground" aria-label="Twitter"
-                                      href={twitterShareUrl}>
-                                    <FaSquareXTwitter size={24}/>
-                                </Link>
-                                <Link isBlock isExternal color="foreground" aria-label="Github"
-                                      href={siteConfig.links.github}>
-                                    <IoLogoGithub size={24}/>
-                                </Link>
-                                <Button
-                                    isIconOnly
-                                    variant="light"
-                                >
-                                    <ThemeSwitch/>
-                                </Button>
-                                <ShortcutsModal/>
-                                <BackgroundChanger/>
-                            </div>
-                        </CardFooter>
-                    </>
-                ) : (
-                    <CardBody>
-                        <div>Loading stations...</div>
-                    </CardBody>
-                )}
-            </Card>
+                                </CardFooter>
+                            </>
+                        ) : (
+                            <CardBody>
+                                <div>Loading stations...</div>
+                            </CardBody>
+                        )}
+                    </Card>
+                </motion.div>
+            </AnimatePresence>
         </Hotkeys>
     );
 };
