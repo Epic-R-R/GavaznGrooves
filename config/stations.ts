@@ -27,6 +27,16 @@ export const stations: Category[] = [
         ]
     },
     {
+        name: "Piano",
+        stations: [
+            {
+                name: "OCB Piano Music",
+                picture: "stations/ocb-piano.gif",
+                videoId: "4khIPP--FDU"
+            },
+        ]
+    },
+    {
         name: "Rap/Hip Hop",
         stations: [
             {
