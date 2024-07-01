@@ -7,6 +7,13 @@
 .yarn/install-state.gz
 .idea/
 
+# pwa files
+public/swe-worker-development.js
+public/sw.js
+public/workbox-7144475a.js
+public/sw.js.map
+public/workbox-7144475a.js.map
+
 # testing
 /coverage
 
